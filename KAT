@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tapping Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            font-family: 'Arial', sans-serif;
+            color: #333;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+        }
+        #coin {
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+            transition: transform 0.1s;
+        }
+        #coin:active {
+            transform: scale(0.9);
+        }
+        #score, #timer, #level {
+            font-size: 24px;
+            margin-top: 20px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+        #game-over {
+            display: none;
+            font-size: 30px;
+            color: red;
+            text-shadow: 1px 1px 2px rgba(255, 0, 0, 0.5);
+        }
+        #restart {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        #restart:hover {
+            background-color: #ff6b81;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tapping Game</h1>
+    <img id="coin" src="coin.png" alt="Coin">
+    <div id="score">Score: 0</div>
+    <div id="timer">Time: 30</div>
+    <div id="level">Level: 1</div>
+    <div id="game-over">Game Over!</div>
+    <button id="restart" style="display:none;">Restart Game</button>
+
+    <audio id="tap-sound" src="tap.mp3"></audio>
+
+    <script>
+        let score = 0;
+        let level = 1;
+        let timeLeft = 30;
+        let timer;
+        const coin = document.getElementById('coin');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const levelDisplay = document.getElementById('level');
+        const gameOverDisplay = document.getElementById('game-over');
+        const restartButton = document.getElementById('restart');
+        const tapSound = document.getElementById('tap-sound');
+
+        coin.addEventListener('click', () => {
+            score++;
+            tapSound.play();
+            scoreDisplay.textContent = 'Score: ' + score;
+
+            if (score % 10 === 0) {
+                level++;
+                levelDisplay.textContent = 'Level: ' + level;
+                timeLeft += 5; // Increase time with each level
+            }
+        });
+
+        function startGame() {
+            score = 0;
+            level = 1;
+            timeLeft = 30;
+            scoreDisplay.textContent = 'Score: 0';
+            levelDisplay.textContent = 'Level: 1';
+            timerDisplay.textContent = 'Time: 30';
+            gameOverDisplay.style.display = 'none';
+            restartButton.style.display = 'none';
+            coin.style.display = 'block';
+
+            timer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = 'Time: ' + timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    gameOver();
+                }
+            }, 1000);
+        }
+
+        function gameOver() {
+            gameOverDisplay.style.display = 'block';
+            coin.style.display = 'none';
+            timerDisplay.style.display = 'none';
+            levelDisplay.style.display = 'none';
+            restartButton.style.display = 'block';
+        }
+
+        restartButton.addEventListener('click', startGame);
+
+        // Start the game when the page loads
+        window.onload = () => {
+            startGame();
+        };
+    </script>
+</body>
+</html>
